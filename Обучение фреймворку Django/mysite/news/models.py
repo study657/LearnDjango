@@ -10,6 +10,8 @@ class News(models.Model):
     is_published = models.BooleanField(default=True, verbose_name='Опубликованно')
     category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, verbose_name='Категория') # Связывание этой области с таблицей категорий. Параметр null нужен потому, что мы уже ранее создали таблицу и без этого параметра ее просто нельзя будет поменять, т.к. данных то там нет, а мы добавляем новое поле
 
+    def my_func(self):
+        return 'Hello from model'
 
     def __str__(self): # Функция, которая показывает строковое представление объектов
         return self.title
