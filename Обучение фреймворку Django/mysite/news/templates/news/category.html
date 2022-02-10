@@ -30,7 +30,7 @@
                 {% autoescape off %}
                 <p class="card-text">{{ item.content|safe|linebreaks|truncatewords:50 }}</p>
                 {% endautoescape %}
-                <a href="#" class="btn btn-primary">Подробнее...</a>
+                <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Подробнее...</a>
             </div>
         </div>
     </div>
