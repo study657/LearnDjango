@@ -1,52 +1,44 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {{ title }} :: {{ block.super }}
+{{ title }} :: {{ block.super }}
 {% endblock %}
 
 {% block sidebar %}
-<div class="col-md-3">
-    <div class="list-group">
-        {% for item in categories %}
-        <a href="{% url 'category' item.pk %}" class="list-group-item list-group-item-action">{{ item.title }}</a>
-        {% endfor %}
-    </div>
-</div>
+    {% include 'inc/_sidebar.html' %}
 {% endblock %}
 
 {% block content %}
-<div class="col-md-9">
-    <h1>{{ title }}</h1>
-    {% now 'Y-m-d H:i:s' %}
-    {% for item in news %}
-    <div class="card mb-3">
-        <div class="card-header">
-            {{item.my_func}}
-            {{forloop.counter}}
-            <!-- Служебная переменная, которая выводит итерацию цикла -->
-            Категория: <a href="{% url 'category' item.category.pk %}">{{ item.category }}</a>
-        </div>
-        <div class="card-body">
-            <div class="media">
-                {% if item.photo %}
-                <img src="{{ item.photo.url }}" alt="" width="350" class="mr-3">
-                {% else %}
-                <img src="https://yes-books.ru/image/catalog/Family%20and%20Friends/net.jpg" alt=""
-                    width="350" class="mr-3">
-                {% endif %}
-                <div class="media-body">
-                    <h5 class="card-title {% cycle 'text-danger' 'text-success' %}">{{ item.title }}</h5>
-                    {% autoescape off %}
-                    <p class="card-text">{{ item.content|safe|linebreaks|truncatewords:50 }}</p>
-                    {% endautoescape %}
-                    <a href="#" class="btn btn-primary">Подробнее...</a>
-                </div>
+<h1>{{ title }}</h1>
+{% now 'Y-m-d H:i:s' %}
+{% for item in news %}
+<div class="card mb-3">
+    <div class="card-header">
+        {{item.my_func}}
+        {{forloop.counter}}
+        <!-- Служебная переменная, которая выводит итерацию цикла -->
+        Категория: <a href="{% url 'category' item.category.pk %}">{{ item.category }}</a>
+    </div>
+    <div class="card-body">
+        <div class="media">
+            {% if item.photo %}
+            <img src="{{ item.photo.url }}" alt="" width="350" class="mr-3">
+            {% else %}
+            <img src="https://yes-books.ru/image/catalog/Family%20and%20Friends/net.jpg" alt="" width="350"
+                class="mr-3">
+            {% endif %}
+            <div class="media-body">
+                <h5 class="card-title {% cycle 'text-danger' 'text-success' %}">{{ item.title }}</h5>
+                {% autoescape off %}
+                <p class="card-text">{{ item.content|safe|linebreaks|truncatewords:50 }}</p>
+                {% endautoescape %}
+                <a href="#" class="btn btn-primary">Подробнее...</a>
             </div>
         </div>
-        <div class="card-footer text-muted">
-            {{ item.created_at|date:'Y-m-d H:i:s' }}
-        </div>
     </div>
-    {% endfor %}
+    <div class="card-footer text-muted">
+        {{ item.created_at|date:'Y-m-d H:i:s' }}
+    </div>
 </div>
+{% endfor %}
 {% endblock %}

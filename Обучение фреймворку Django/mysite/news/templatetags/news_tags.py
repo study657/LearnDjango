@@ -1,0 +1,14 @@
+from django import template
+from news.models import Category
+
+register = template.Library()
+
+@register.simple_tag(name='get_list_categiries') # Декоратор. Нужен для возможности отмены поведения функции
+def get_categiries(): # Создание простого тега simple tag, который просто может выводить данные
+    return Category.objects.all()
+
+
+@register.inclusion_tag('news/list_categories.html') # Тег и параметром передается где он создан
+def show_categories(arg1='Hello', arg2='world'): # Создание уже сложного тега, который может и выводить данные и рендерить их, т.е. отображать
+    categories = Category.objects.all()
+    return {'categories': categories, 'arg1': arg1, 'arg2': arg2}
