@@ -20,18 +20,33 @@ class HomeNews(ListView):
         return News.objects.filter(is_published=True)
 
 
+class NewsByCategory(ListView):
+    model = News
+    template_name = 'news/home_news_list.html'
+    context_object_name = 'news'
+    allow_empty = False # Не разрешаем показ пустых списков. Нужно для того, чтобы если пользователь перейдет на id не существующей категории, чтобы не было ошибки 500, а была 404 ошибка
 
-def index(request):
-    news = News.objects.all()
-    return render(request, 'news/index.html', {'news': news, 'title': 'Список новостей',})
+    def get_context_data(self, **kwargs): # Данная функция уже позволяет нам получать переменные, но уже и те которые являются динамическими, т.е. изменяемыми, в общем улучшенная версия атрибута extra_context
+        context = super().get_context_data(**kwargs) # Теперь в переменной записано все то, что было до этого
+        context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
+        return context
 
-def test(request):
-    return HttpResponse('<h1>Тестовая страница</h1>')
+    def get_queryset(self): # Данные метод переопределеяется в том случае, если нам нужна фильтрация по определенным данным. Например мы не хотим, чтобы если галочка не стоит в is_published, тогда новость бы не показывалась и вот тогда мы переопределяем этот метод
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
 
-def get_category(request, category_id):
-    news = News.objects.filter(category_id=category_id) # Получаем только отфильтрованные новости, т.е. те, которые соответствуют выбранной категории
-    category = Category.objects.get(pk=category_id)
-    return render(request, 'news/category.html', {'news': news, 'category': category})
+
+
+# def index(request):
+#     news = News.objects.all()
+#     return render(request, 'news/index.html', {'news': news, 'title': 'Список новостей',})
+
+# def test(request):
+#     return HttpResponse('<h1>Тестовая страница</h1>')
+
+# def get_category(request, category_id):
+#     news = News.objects.filter(category_id=category_id) # Получаем только отфильтрованные новости, т.е. те, которые соответствуют выбранной категории
+#     category = Category.objects.get(pk=category_id)
+#     return render(request, 'news/category.html', {'news': news, 'category': category})
 
 def view_news(request, news_id):
     # news_item = News.objects.get(pk=news_id)
