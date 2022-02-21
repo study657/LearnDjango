@@ -1,9 +1,16 @@
+from dataclasses import fields
+from tkinter import Widget
 from unicodedata import category
 from django import forms
-from .models import Category
+from .models import News
 
-class NewsForm(forms.Form):
-    title = forms.CharField(max_length=150, label='Название', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    content = forms.CharField(label='Текст', required=False, widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
-    is_published = forms.BooleanField(label='Опубликованно?', initial=True)
-    category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='Выберите категорию', label='Категория', widget=forms.Select(attrs={'class': 'form-control'}))
+class NewsForm(forms.ModelForm):
+    class Meta:
+        model = News
+        # fields = '__all__' # Для того, чтобы отобразить все ячейки с БД, но на практике его использовать не рекоммендуется
+        fields = ['title', 'content', 'is_published', 'category'] # Лучше перечислять все ячейки, которые мы хотим видеть
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
+            'category': forms.Select(attrs={'class': 'form-control'})
+        }

@@ -21,12 +21,13 @@ def view_news(request, news_id):
     return render(request, 'news/view_news.html', {'news_item': news_item})
 
 def add_news(request):
-    if request.method == 'POST': # При отправке данных из формы
+    if request.method == 'POST': # При отправке данных из формы, т.е. когда идет метод POST - отправка данных
         form = NewsForm(request.POST)
         if form.is_valid():
             # print(form.cleaned_data)
-            news = News.objects.create(**form.cleaned_data) # Сохранение данных в БД. ** - это распаковка словаря
+            # news = News.objects.create(**form.cleaned_data) # Сохранение данных в БД. ** - это распаковка словаря
+            news = form.save()
             return redirect(news) # После успешной отправки формы делаем редирект на страничку home или же на созданный объект, в данном случае на созданную новость
-    else: # При рендеринге (показ формы при заходе на страницу)
+    else: # При рендеринге (показ формы при заходе на страницу, т.е. когда идет метод GET)
         form = NewsForm()
     return render(request, 'news/add_news.html', {'form': form})
