@@ -1,8 +1,7 @@
-from dataclasses import fields
-from tkinter import Widget
-from unicodedata import category
 from django import forms
 from .models import News
+from django.core.exceptions import ValidationError
+import re
 
 class NewsForm(forms.ModelForm):
     class Meta:
@@ -14,3 +13,10 @@ class NewsForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'category': forms.Select(attrs={'class': 'form-control'})
         }
+
+
+    def clean_title(self): # Для валидации создается данный метод
+        title = self.cleaned_data['title'] # Получаем наш title, который хотим валидировать
+        if re.match(r'\d', title): # Делаем проверку регулярным выражением на то, есть ли цифра в начале
+            raise ValidationError('Название не должно начинаться с цифры') # Если есть, то вызываем ошибку, если нет, то возвращаем наш title
+        return title
