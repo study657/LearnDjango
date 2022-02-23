@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.http import HttpResponse
 from news.models import News, Category
 from .forms import NewsForm
@@ -35,6 +35,13 @@ class NewsByCategory(ListView):
         return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
 
 
+class ViewNews(DetailView):
+    model = News
+    pk_url_kwarg = 'news_id' # Наш pk или наш id он приходит в urls.py в виде параметра news_id
+    context_object_name = 'news_item'
+    # template_name = 'news/news_detail.html'
+
+
 
 # def index(request):
 #     news = News.objects.all()
@@ -48,10 +55,10 @@ class NewsByCategory(ListView):
 #     category = Category.objects.get(pk=category_id)
 #     return render(request, 'news/category.html', {'news': news, 'category': category})
 
-def view_news(request, news_id):
-    # news_item = News.objects.get(pk=news_id)
-    news_item = get_object_or_404(News, pk=news_id)
-    return render(request, 'news/view_news.html', {'news_item': news_item})
+# def view_news(request, news_id):
+#     # news_item = News.objects.get(pk=news_id)
+#     news_item = get_object_or_404(News, pk=news_id)
+#     return render(request, 'news/view_news.html', {'news_item': news_item})
 
 def add_news(request):
     if request.method == 'POST': # При отправке данных из формы, т.е. когда идет метод POST - отправка данных
