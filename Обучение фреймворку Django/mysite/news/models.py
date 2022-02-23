@@ -13,7 +13,7 @@ class News(models.Model):
     def my_func(self):
         return 'Hello from model'
 
-    def get_absolute_url(self):
+    def get_absolute_url(self): # Благодаря этому методу, если мы работаем с классами в views.py то происходит при добавлении чего-то в БД редирект на эту самую новость, которую мы добавили
         return reverse("view_news", kwargs={"news_id": self.pk})
 
     def __str__(self): # Функция, которая показывает строковое представление объектов

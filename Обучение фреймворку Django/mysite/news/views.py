@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
+from django.urls import reverse_lazy
 from django.http import HttpResponse
 from news.models import News, Category
 from .forms import NewsForm
@@ -42,6 +43,12 @@ class ViewNews(DetailView):
     # template_name = 'news/news_detail.html'
 
 
+class CreateNews(CreateView):
+    form_class = NewsForm # Связывание нашей формы с классом, т.е. мы должны связаться с формой
+    template_name = 'news/add_news.html'
+    # success_url = reverse_lazy('home') # Указание данного атрибута нужно для того, что если в модели мы не используем метод get_absolute_url, тогда после создания новости идет редирект на этот адрес
+
+
 
 # def index(request):
 #     news = News.objects.all()
@@ -60,14 +67,14 @@ class ViewNews(DetailView):
 #     news_item = get_object_or_404(News, pk=news_id)
 #     return render(request, 'news/view_news.html', {'news_item': news_item})
 
-def add_news(request):
-    if request.method == 'POST': # При отправке данных из формы, т.е. когда идет метод POST - отправка данных
-        form = NewsForm(request.POST)
-        if form.is_valid():
-            # print(form.cleaned_data)
-            # news = News.objects.create(**form.cleaned_data) # Сохранение данных в БД. ** - это распаковка словаря
-            news = form.save()
-            return redirect(news) # После успешной отправки формы делаем редирект на страничку home или же на созданный объект, в данном случае на созданную новость
-    else: # При рендеринге (показ формы при заходе на страницу, т.е. когда идет метод GET)
-        form = NewsForm()
-    return render(request, 'news/add_news.html', {'form': form})
+# def add_news(request):
+#     if request.method == 'POST': # При отправке данных из формы, т.е. когда идет метод POST - отправка данных
+#         form = NewsForm(request.POST)
+#         if form.is_valid():
+#             # print(form.cleaned_data)
+#             # news = News.objects.create(**form.cleaned_data) # Сохранение данных в БД. ** - это распаковка словаря
+#             news = form.save()
+#             return redirect(news) # После успешной отправки формы делаем редирект на страничку home или же на созданный объект, в данном случае на созданную новость
+#     else: # При рендеринге (показ формы при заходе на страницу, т.е. когда идет метод GET)
+#         form = NewsForm()
+#     return render(request, 'news/add_news.html', {'form': form})
