@@ -1,5 +1,6 @@
 from django import template
 from news.models import Category
+from django.db.models import Count
 
 register = template.Library()
 
@@ -10,5 +11,6 @@ def get_categiries(): # Создание простого тега simple tag, �
 
 @register.inclusion_tag('news/list_categories.html') # Тег и параметром передается где он создан
 def show_categories(arg1='Hello', arg2='world'): # Создание уже сложного тега, который может и выводить данные и рендерить их, т.е. отображать
-    categories = Category.objects.all()
+    # categories = Category.objects.all()
+    categories = Category.objects.annotate(cnt=Count('news')).filter(cnt__gt=0) # С помощью метода annotate выводим только те категории, в которых есть записи (новости)
     return {'categories': categories, 'arg1': arg1, 'arg2': arg2}
