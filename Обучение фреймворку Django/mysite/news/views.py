@@ -18,7 +18,7 @@ class HomeNews(ListView):
         return context
 
     def get_queryset(self): # Данные метод переопределеяется в том случае, если нам нужна фильтрация по определенным данным. Например мы не хотим, чтобы если галочка не стоит в is_published, тогда новость бы не показывалась и вот тогда мы переопределяем этот метод
-        return News.objects.filter(is_published=True)
+        return News.objects.filter(is_published=True).select_related('category')
 
 
 class NewsByCategory(ListView):
@@ -33,7 +33,7 @@ class NewsByCategory(ListView):
         return context
 
     def get_queryset(self): # Данные метод переопределеяется в том случае, если нам нужна фильтрация по определенным данным. Например мы не хотим, чтобы если галочка не стоит в is_published, тогда новость бы не показывалась и вот тогда мы переопределяем этот метод
-        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True).select_related('category')
 
 
 class ViewNews(DetailView):
