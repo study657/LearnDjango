@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+{{ mixin_prop }}
 <h1>{{ title }}</h1>
 {% now 'Y-m-d H:i:s' %}
 {% for item in news %}

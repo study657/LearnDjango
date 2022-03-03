@@ -4,24 +4,28 @@ from django.urls import reverse_lazy
 from django.http import HttpResponse
 from news.models import News, Category
 from .forms import NewsForm
+from .utils import MyMixin
+from django.contrib.auth.mixins import LoginRequiredMixin # Добавляем этот класс для ограничения доступа к полю "добавить новость" на сайте
 
 
-class HomeNews(ListView):
+class HomeNews(MyMixin, ListView):
     model = News # Будут полученны все данные из модели News
     template_name = 'news/home_news_list.html' # Переобределение базового файла. По умолчанию django создает файл с названием приложения + _list.html, но мы хотим свое название. Теперь шаблон news_list.html не используется
     context_object_name = 'news' # Указываем название того объекта с которым мы хотим работать, вместо базового object_list. Это все уже в шаблоне, когда проходим циклом. {% for item in object_list %}, теперь соответственно {% for item in news %}
     # extra_context = {'title': 'Главная',} # Этот атрибут желательно использовать только для статичных данных и нужен он для того, чтобы в шаблонах отображались переменные, ибо сейчас вот эта переменная без этого атрибута не выведется: {{ title }} :: {{ block.super }}, а когда мы задали этот атрибут, то уже увидим эту переменную
+    mixin_prop = 'hello world'
 
     def get_context_data(self, **kwargs): # Данная функция уже позволяет нам получать переменные, но уже и те которые являются динамическими, т.е. изменяемыми, в общем улучшенная версия атрибута extra_context
         context = super().get_context_data(**kwargs) # Теперь в переменной записано все то, что было до этого
-        context['title'] = 'Главная страница'
+        context['title'] = self.get_upper('Главная страница')
+        context['mixin_prop'] = self.get_prop()
         return context
 
     def get_queryset(self): # Данные метод переопределеяется в том случае, если нам нужна фильтрация по определенным данным. Например мы не хотим, чтобы если галочка не стоит в is_published, тогда новость бы не показывалась и вот тогда мы переопределяем этот метод
         return News.objects.filter(is_published=True).select_related('category')
 
 
-class NewsByCategory(ListView):
+class NewsByCategory(MyMixin, ListView):
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
@@ -29,7 +33,7 @@ class NewsByCategory(ListView):
 
     def get_context_data(self, **kwargs): # Данная функция уже позволяет нам получать переменные, но уже и те которые являются динамическими, т.е. изменяемыми, в общем улучшенная версия атрибута extra_context
         context = super().get_context_data(**kwargs) # Теперь в переменной записано все то, что было до этого
-        context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
+        context['title'] = self.get_upper(Category.objects.get(pk=self.kwargs['category_id']))
         return context
 
     def get_queryset(self): # Данные метод переопределеяется в том случае, если нам нужна фильтрация по определенным данным. Например мы не хотим, чтобы если галочка не стоит в is_published, тогда новость бы не показывалась и вот тогда мы переопределяем этот метод
@@ -43,11 +47,11 @@ class ViewNews(DetailView):
     # template_name = 'news/news_detail.html'
 
 
-class CreateNews(CreateView):
+class CreateNews(LoginRequiredMixin, CreateView):
     form_class = NewsForm # Связывание нашей формы с классом, т.е. мы должны связаться с формой
     template_name = 'news/add_news.html'
     # success_url = reverse_lazy('home') # Указание данного атрибута нужно для того, что если в модели мы не используем метод get_absolute_url, тогда после создания новости идет редирект на этот адрес
-
+    login_url = '/admin/' # С помощью класса LoginRequiredMixin задали атрибут, который в случае попадания пользователя по ссылке, которая запрещена он будет перенаправлен на данный адрес
 
 
 # def index(request):
