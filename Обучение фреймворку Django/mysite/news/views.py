@@ -3,17 +3,16 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from news.models import News, Category
-from .forms import NewsForm
+from .forms import NewsForm, UserRegisterForm
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin # Добавляем этот класс для ограничения доступа к полю "добавить новость" на сайте
 from django.core.paginator import Paginator
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages # Информационный модуль, который при каких=то действиях будет нам показывать информацию
 
 
 def register(request):
     if request.method == 'POST': # Если у нас метод POST, тогда мы создаем форму и заполняем ее данными из поста
-        form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Вы успешно зарегистрировались')
@@ -21,7 +20,7 @@ def register(request):
         else:
             messages.error(request, 'Ошибка регистрации')
     else: # В противном случае это будет не связанная форма
-        form = UserCreationForm()
+        form = UserRegisterForm()
     return render(request, 'news/register.html', {'form': form})
 
 def login(request):
