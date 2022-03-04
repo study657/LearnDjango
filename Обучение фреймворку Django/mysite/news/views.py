@@ -7,6 +7,25 @@ from .forms import NewsForm
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin # Добавляем этот класс для ограничения доступа к полю "добавить новость" на сайте
 from django.core.paginator import Paginator
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages # Информационный модуль, который при каких=то действиях будет нам показывать информацию
+
+
+def register(request):
+    if request.method == 'POST': # Если у нас метод POST, тогда мы создаем форму и заполняем ее данными из поста
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Вы успешно зарегистрировались')
+            return redirect('login')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else: # В противном случае это будет не связанная форма
+        form = UserCreationForm()
+    return render(request, 'news/register.html', {'form': form})
+
+def login(request):
+    return render(request, 'news/login.html')
 
 
 class HomeNews(MyMixin, ListView):
