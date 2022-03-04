@@ -6,6 +6,7 @@ from news.models import News, Category
 from .forms import NewsForm
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin # Добавляем этот класс для ограничения доступа к полю "добавить новость" на сайте
+from django.core.paginator import Paginator
 
 
 class HomeNews(MyMixin, ListView):
@@ -52,6 +53,16 @@ class CreateNews(LoginRequiredMixin, CreateView):
     template_name = 'news/add_news.html'
     # success_url = reverse_lazy('home') # Указание данного атрибута нужно для того, что если в модели мы не используем метод get_absolute_url, тогда после создания новости идет редирект на этот адрес
     login_url = '/admin/' # С помощью класса LoginRequiredMixin задали атрибут, который в случае попадания пользователя по ссылке, которая запрещена он будет перенаправлен на данный адрес
+
+
+
+
+def test(request): # Функция, которая создает пагинацию на нашей странице (нумерацию)
+    objects = ['John1', 'Paul2', 'George3', 'Ringo4', 'John5', 'Paul6', 'George7']
+    paginator = Paginator(objects, 2) # Создали объект, с данными из objects и разбили их на 2 записи на каждой странице
+    page_num = request.GET.get('page', 1) # Получили нашу текущую страницу, на которой находится пользователь. Если такая не найдена, то базово будет присвоена единичка (1)
+    page_objects = paginator.get_page(page_num)
+    return render(request, 'news/test.html', {'page_obj': page_objects})
 
 
 # def index(request):
