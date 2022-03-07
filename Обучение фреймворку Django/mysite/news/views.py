@@ -3,28 +3,44 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from news.models import News, Category
-from .forms import NewsForm, UserRegisterForm
+from .forms import NewsForm, UserRegisterForm, UserLoginForm
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin # Добавляем этот класс для ограничения доступа к полю "добавить новость" на сайте
 from django.core.paginator import Paginator
 from django.contrib import messages # Информационный модуль, который при каких=то действиях будет нам показывать информацию
+from django.contrib.auth import login, logout
 
 
 def register(request):
     if request.method == 'POST': # Если у нас метод POST, тогда мы создаем форму и заполняем ее данными из поста
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save() # Делаем реализацию автоматической авторизации пользователя после регистрации
+            login(request, user)
             messages.success(request, 'Вы успешно зарегистрировались')
-            return redirect('login')
+            return redirect('home')
         else:
             messages.error(request, 'Ошибка регистрации')
     else: # В противном случае это будет не связанная форма
         form = UserRegisterForm()
     return render(request, 'news/register.html', {'form': form})
 
-def login(request):
-    return render(request, 'news/login.html')
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserLoginForm()
+
+    return render(request, 'news/login.html', {'form': form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')
 
 
 class HomeNews(MyMixin, ListView):
