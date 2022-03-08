@@ -136,3 +136,10 @@ MEDIA_URL = '/media/'
 
 
 INTERNAL_IPS = ["127.0.0.1"]
+
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = '993'
+EMAIL_HOST_USER = 'Почта для работы (mail@mail.ru)'
+EMAIL_HOST_PASSWORD = 'Пароль для доступа к электронной почты выше'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True

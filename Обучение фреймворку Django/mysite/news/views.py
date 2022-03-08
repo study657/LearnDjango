@@ -3,12 +3,30 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.http import HttpResponse
 from news.models import News, Category
-from .forms import NewsForm, UserRegisterForm, UserLoginForm
+from .forms import NewsForm, UserRegisterForm, UserLoginForm, ContactForm
 from .utils import MyMixin
 from django.contrib.auth.mixins import LoginRequiredMixin # Добавляем этот класс для ограничения доступа к полю "добавить новость" на сайте
 from django.core.paginator import Paginator
 from django.contrib import messages # Информационный модуль, который при каких=то действиях будет нам показывать информацию
 from django.contrib.auth import login, logout
+from django.core.mail import send_mail
+
+
+def send_mail(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'mail@mail.ru', ['адресат1@mail.ru'], fail_silently=True)
+            if mail:
+                messages.success(request, 'Письмо отправлено')
+                return redirect('home')
+            else:
+                messages.error(request, 'Ошибка отправки')
+        else:
+            messages.error(request, '')
+    else:
+        form = ContactForm()
+    return render(request, 'news/test.html', {'form': form})
 
 
 def register(request):
