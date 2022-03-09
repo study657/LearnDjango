@@ -1,9 +1,10 @@
 from django.urls import path
 from .views import *
+from django.views.decorators.cache import cache_page
 
 urlpatterns = [
     # path('', index, name='home'),
-    path('', HomeNews.as_view(), name='home'), # Маршрут если используем класс
+    path('', cache_page(60)(HomeNews.as_view()), name='home'), # Маршрут если используем класс
     # path('test/', test),
     # path('category/<int:category_id>/', get_category, name='category'), # В таких скобочках <> записываются параметры, которые применяются в функции (<int:category_id>)
     path('category/<int:category_id>/', NewsByCategory.as_view(extra_context={'title': 'Какой-то title'}), name='category'),
