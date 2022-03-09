@@ -1,8 +1,19 @@
 from django.contrib import admin
 from .models import News, Category
 from django.utils.safestring import mark_safe
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django import forms
+
+class NewsAdminForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorUploadingWidget()) # Для этого поля идет переопределение и добавление собственно нашего визуального редактора в админке
+
+    class Meta:
+        model = News
+        fields = '__all__'
+
 
 class NewsAdmin(admin.ModelAdmin):
+    form = NewsAdminForm # Подключаем данный класс к нашей форме админки
     list_display = ('id', 'title', 'category', 'created_at', 'updated_at', 'is_published', 'get_photo')
     list_display_links = ('id', 'title')
     search_field = ('title', 'content')
