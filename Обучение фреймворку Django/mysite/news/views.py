@@ -12,6 +12,24 @@ from django.contrib.auth import login, logout
 from django.core.mail import send_mail
 
 
+def contact(request): # Функция, которая создает пагинацию на нашей странице (нумерацию)
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'mail@mail.ru', ['адресат1@mail.ru'], fail_silently=True)
+            if mail:
+                messages.success(request, 'Письмо отправлено')
+                return redirect('contact')
+            else:
+                messages.error(request, 'Ошибка отправки')
+        else:
+            messages.error(request, 'Ошибка валидации')
+    else:
+        form = ContactForm()
+    return render(request, 'news/test.html', {'form': form})
+
+
+
 def send_mail(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)

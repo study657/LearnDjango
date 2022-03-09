@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     'ckeditor', # Визуальный редактор CKEditor
     'ckeditor_uploader',
+    'captcha'
 ]
 
 MIDDLEWARE = [
@@ -213,3 +214,8 @@ CKEDITOR_CONFIGS = { # Допонительная конфигурация дл�
         ]),
     }
 }
+
+
+CAPTCHA_LETTER_ROTATION = None
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+CAPTCHA_NOISE_FUNCTIONS = None
