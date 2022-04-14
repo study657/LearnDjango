@@ -1,3 +1,5 @@
+from msilib import CAB
+from unicodedata import category
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
 from .models import *
@@ -12,6 +14,22 @@ class Home(ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Classic Blog Design'
         return context
+
+
+class PostByCategory(ListView):
+    template_name = 'blog/index.html'
+    context_object_name = 'posts'
+    paginate_by = 2
+    allow_empty = False
+
+    def get_queryset(self):
+        return Post.objects.filter(category__slug=self.kwargs['slug'])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = Category.objects.get(slug=self.kwargs['slug'])
+        return context
+
 
 
 # def index(request):
