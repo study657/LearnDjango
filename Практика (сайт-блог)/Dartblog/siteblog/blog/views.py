@@ -1,7 +1,7 @@
-from msilib import CAB
 from unicodedata import category
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
+from django.db.models import F
 from .models import *
 
 class Home(ListView):
@@ -31,18 +31,18 @@ class PostByCategory(ListView):
         return context
 
 
+class GetPost(DetailView):
+    model = Post
+    template_name = 'blog/single.html'
+    context_object_name = 'post'
 
-# def index(request):
-#     posts = Post.objects.all()
-#     paginator = Paginator(posts, 2)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        self.object.views = F('views') + 1
+        self.object.save()
+        self.object.refresh_from_db()
+        return context
 
-#     page_number = request.GET.get('page', 1)
-#     page_obj = paginator.get_page(page_number)
-#     return render(request, 'blog/index.html', {'page_obj': page_obj, 'title': 'Classic Blog Design'})
 
-
-def get_category(request, slug):
-    return render(request, 'blog/category.html')
-
-def get_post(request, slug):
-    return render(request, 'blog/post.html')
+class PostByTag(ListView):
+    pass
