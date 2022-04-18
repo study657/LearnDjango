@@ -1,0 +1,20 @@
+<h2 class="sidebar-title">POPULAR POSTS</h2>
+<div class="grid">
+    {% for post in posts %}
+    <div class="portfolio-item popular">
+        {% if post.photo %}
+            <img src="{{ post.photo.url }}" alt="{{ post.title }}">
+        {% else %}
+            <img src="https://yes-books.ru/image/catalog/Family%20and%20Friends/net.jpg" alt="{{ post.title }}">
+        {% endif %}
+        <div class="portfolio-text">
+            <h5><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h5>
+            {% if post.author == '' %}
+                <p>By Admin <span>|</span>{{ post.created_at }}</p>
+            {% else %}
+                <p>By {{ post.author }} <span>|</span></p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>

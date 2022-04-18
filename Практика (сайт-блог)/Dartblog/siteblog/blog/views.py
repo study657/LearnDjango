@@ -1,4 +1,3 @@
-from unicodedata import category
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render
 from django.db.models import F
