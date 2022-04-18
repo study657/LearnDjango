@@ -125,17 +125,17 @@
                     </div>
                 </div>
                 <div class="col-md-4">
+                    <div class="newsletter">
+                        <h2 class="sidebar-title">ПОИСК</h2>
+                        <form action="{% url 'search' %}" method="get">
+                            <input type="text" name="s" placeholder="Поиск">
+                            <input type="submit" value="Найти">
+                        </form>
+                    </div>
+
                     {% get_popular 3 %}
 
                     {% get_tags %}
-                    
-                    <div class="newsletter">
-                        <h2 class="sidebar-title">Subscribe To oUR nEWSLETTER</h2>
-                        <form action="#" method="post">
-                            <input type="email" name="" id="" placeholder="Email">
-                            <input type="submit" value="Subscribe">
-                        </form>
-                    </div>
                 </div>
                 </div>
                 </div>
