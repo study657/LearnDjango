@@ -229,3 +229,6 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
     }
 }
+
+
+MPTT_ADMIN_LEVEL_INDENT = 20
