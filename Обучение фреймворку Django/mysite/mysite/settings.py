@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
     'ckeditor', # Визуальный редактор CKEditor
     'ckeditor_uploader',
-    'captcha'
+    'captcha',
+    'mptt',
 ]
 
 MIDDLEWARE = [
