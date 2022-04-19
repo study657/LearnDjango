@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'news.apps.NewsConfig',
+    'testapp.apps.TestappConfig',
     "debug_toolbar",
     'ckeditor', # Визуальный редактор CKEditor
     'ckeditor_uploader',
